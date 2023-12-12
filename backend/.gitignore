@@ -1,0 +1,35 @@
+# Ignorierte Dateien und Verzeichnisse
+
+# macOS-Systemdateien
+.DS_Store
+
+# Node.js- und npm-spezifische Dateien
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Umgebungsvariablen (nur .env-Beispiel, um Ihre eigenen sicher zu halten)
+.env
+
+# IDE- oder Editor-spezifische Dateien (z.B. VSCode, WebStorm, etc.)
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Abhängigkeiten, die nicht benötigt werden (z.B. Tests, Beispieldaten)
+tests/
+examples/
+
+# Log-Dateien
+logs/
+*.log
+npm-debug.log*
+
+# Für Windows-Systeme erstellte Dateien
+Thumbs.db
+ehthumbs.db
+
+# Verzeichnisse, die für den Bau der Anwendung erstellt werden
+build/
+dist/
