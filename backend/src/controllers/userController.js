@@ -9,7 +9,7 @@ const userController = {
     // Get all users
     async getAllUsers(req, res) {
         try {
-            const [users] = await database.query('SELECT id, username, email FROM Users');
+            const [users] = await database.query('SELECT id, username, email, role FROM Users');
             res.json(users);
         } catch (error) {
             console.error(error);
@@ -122,10 +122,10 @@ const userController = {
     async deleteUser(req, res) {
         try {
             const { id } = req.params;
-            const [result] = await database.query('DELETE FROM Users WHERE id = ?', [id]);
+            const [result] = await database.query('DELETE FROM Users WHERE id = ? AND role != "admin"', [id]);
 
             if (result.affectedRows === 0) {
-                return res.status(404).json({ message: 'User not found' });
+                return res.status(404).json({ message: 'User not found or trying to delete Admin' });
             }
 
             res.json({ message: 'User deleted' });
