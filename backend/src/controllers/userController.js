@@ -26,7 +26,6 @@ const userController = {
             if (user.length === 0) {
                 return res.status(404).json({ message: 'User not found' });
             }
-
             res.json(user[0]);
         } catch (error) {
             console.error(error);
@@ -162,7 +161,8 @@ const userController = {
                 role: user[0].role
             }, config.jwt_secret_key, { expiresIn: config.jwt_login_duration });
             const id = user[0].id;
-            res.json({ message: 'Login successful', token, id  });
+            const role = user[0].role;
+            res.json({ message: 'Login successful', token, id, role  });
 
         } catch (error) {
             console.error(error);

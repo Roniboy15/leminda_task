@@ -1,6 +1,9 @@
 Context
 -fix  bug that prevents the userId state from changing (it changes to undefined when changing routes)
 
-
 README
 -update folder name etc
+
+
+BACKEND / routes
+-stuck at get all responses  for one question
