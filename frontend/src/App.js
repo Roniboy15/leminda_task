@@ -9,27 +9,28 @@ import Signup from './components/signup/signup';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { AuthProvider } from './contexts/AuthContext';
+import Questions from './components/questions/questions';
+import Home from './components/home/Home';
 
 
 
 function App() {
+  
   const userLoggedIn = isAuthenticated();
 
   return (
-    <Router>
-      <AuthProvider>
+    <AuthProvider>
+      <Router>
         <Header />
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/home" element={
-            <ProtectedRoute>
-              <Footer />
-            </ProtectedRoute>}
+            <Home />}
           />
           <Route path="/questions" element={
             <ProtectedRoute>
-              <Footer />
+              <Questions />
             </ProtectedRoute>}
           />
           <Route path="/feedback" element={
@@ -37,12 +38,12 @@ function App() {
               <Footer />
             </ProtectedRoute>}
           />
-          <Route path="*"
-            element={<Navigate to={userLoggedIn ? "/" : "/login"} replace />}
-          />
+          <Route path="*" element={<Navigate to={userLoggedIn ? "/home" : "/login"} replace />} />
+
         </Routes>
-      </AuthProvider>
-    </Router>
+      </Router>
+    </AuthProvider>
+
   );
 }
 

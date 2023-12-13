@@ -1,0 +1,6 @@
+.card{
+    background-color: rgb(113, 207, 254);
+}
+.card-body p{
+    min-height: 50px;
+}

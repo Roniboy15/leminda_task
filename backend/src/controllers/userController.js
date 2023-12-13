@@ -161,8 +161,8 @@ const userController = {
                 username: user[0].username,
                 role: user[0].role
             }, config.jwt_secret_key, { expiresIn: config.jwt_login_duration });
-
-            res.json({ message: 'Login successful', token, user });
+            const id = user[0].id;
+            res.json({ message: 'Login successful', token, id  });
 
         } catch (error) {
             console.error(error);

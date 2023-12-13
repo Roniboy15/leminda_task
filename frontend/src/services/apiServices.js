@@ -24,8 +24,6 @@ export const doApiGet = async(_url) => {
 
 export const doApiPost = async(_url, _body = {}) => {
 
-  console.log(JSON.stringify(_body));
-
   try {
       let resp = await axios({
           url: _url,
