@@ -1,8 +1,8 @@
 const express = require('express');
 const cors = require("cors");
 const http = require("http");
-const { routesInit } = require('./routes/configRoutes');
-const db = require('./db/database')
+const { routesInit } = require('./src/routes/configRoutes');
+const db = require('./src/db/database')
 
 const app = express();
 app.use(cors());

@@ -18,20 +18,26 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <Header/>
+        <Header />
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route
-            path="/home"
-            element={
-              <ProtectedRoute>
-                <Footer />
-              </ProtectedRoute>
-            }
+          <Route path="/home" element={
+            <ProtectedRoute>
+              <Footer />
+            </ProtectedRoute>}
           />
-          <Route
-            path="*"
+          <Route path="/questions" element={
+            <ProtectedRoute>
+              <Footer />
+            </ProtectedRoute>}
+          />
+          <Route path="/feedback" element={
+            <ProtectedRoute>
+              <Footer />
+            </ProtectedRoute>}
+          />
+          <Route path="*"
             element={<Navigate to={userLoggedIn ? "/" : "/login"} replace />}
           />
         </Routes>
