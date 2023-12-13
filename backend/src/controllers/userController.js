@@ -2,13 +2,14 @@ const database = require('../db/database');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { config } = require("../config/secret.js");
+const User = require('../models/User');
 const saltRounds = 10; // Used for bcrypt password hashing
 
 const userController = {
     // Get all users
     async getAllUsers(req, res) {
         try {
-            const [users] = await database.query('SELECT id, username, email FROM Users');
+            const [users] = await database.query('SELECT id, username, email, role FROM Users');
             res.json(users);
         } catch (error) {
             console.error(error);
@@ -38,15 +39,15 @@ const userController = {
         try {
             const { username, email, password } = req.body;
 
-            // Check if the username or email already exists
-            const [existingUser] = await database.query('SELECT * FROM Users WHERE username = ? OR email = ?', [username, email]);
-
-            if (existingUser.length > 0) {
+            // Use the User model to check if the user already exists
+            const existingUsers = await User.findByUsernameOrEmail(username, email);
+            if (existingUsers.length > 0) {
                 return res.status(400).json({ message: 'Username or email already exists' });
             }
 
-            const hashedPassword = await bcrypt.hash(password, saltRounds);
-            await database.query('INSERT INTO Users (username, email, password) VALUES (?, ?, ?)', [username, email, hashedPassword]);
+            // Create and save the new user
+            const newUser = new User(null, username, email, password);
+            await newUser.save();
 
             res.status(201).json({ message: 'User created' });
         } catch (error) {
@@ -121,10 +122,10 @@ const userController = {
     async deleteUser(req, res) {
         try {
             const { id } = req.params;
-            const [result] = await database.query('DELETE FROM Users WHERE id = ?', [id]);
+            const [result] = await database.query('DELETE FROM Users WHERE id = ? AND role != "admin"', [id]);
 
             if (result.affectedRows === 0) {
-                return res.status(404).json({ message: 'User not found' });
+                return res.status(404).json({ message: 'User not found or trying to delete Admin' });
             }
 
             res.json({ message: 'User deleted' });
@@ -161,7 +162,7 @@ const userController = {
                 role: user[0].role
             }, config.jwt_secret_key, { expiresIn: config.jwt_login_duration });
 
-            res.json({ message: 'Login successful', token });
+            res.json({ message: 'Login successful', token, user });
 
         } catch (error) {
             console.error(error);
