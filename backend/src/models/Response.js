@@ -10,6 +10,7 @@ class Response {
 
     // Save a new response
     async save() {
+        console.log(this.answers, this.userId)
         const [result] = await database.query('INSERT INTO Responses (userId, answers) VALUES (?, ?)', [this.userId, JSON.stringify(this.answers)]);
         this.id = result.insertId;
         return this;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { API_URL, doApiGet } from '../../services/apiServices';
+import { API_URL, doApiGet, doApiPost } from '../../services/apiServices';
 import Feedback from './feedback';
 import './questions.css'
 import LoadingSpinner from '../../hooks/loading/loading';
@@ -8,21 +8,20 @@ import LoadingSpinner from '../../hooks/loading/loading';
 const Questions = () => {
     const [questions, setQuestions] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [answers, setAnswers] = useState({});
+    const [answers, setAnswers] = useState([]);
     const [currentAnswer, setCurrentAnswer] = useState('');
     const [showFeedbackModal, setShowFeedbackModal] = useState(false);
-
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     const fetchQuestions = async () => {
         try {
-            const questions = await doApiGet(API_URL + '/questions/all');
-            setQuestions(questions);
+            const questionsFetched = await doApiGet(API_URL + '/questions/all');
+            setQuestions(questionsFetched);
             setLoading(false);
-        } catch (error) {
+        } catch (err) {
             navigate("/");
-            console.error('Error fetching questions:', error);
+            console.error('Error fetching questions:', err);
         }
     };
 
@@ -30,30 +29,55 @@ const Questions = () => {
         fetchQuestions();
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-
     useEffect(() => {
-        setCurrentAnswer(answers[questions[currentQuestionIndex]?.id] || '');
-    }, [currentQuestionIndex, answers, questions]);
+        if (questions.length > 0 && questions[currentQuestionIndex]) {
+            setCurrentAnswer(answers[questions[currentQuestionIndex].id] || '');
+        }
+    }, [currentQuestionIndex, questions, answers]);
 
     const handleAnswerChange = (e) => {
         setCurrentAnswer(e.target.value);
-        setAnswers({ ...answers, [questions[currentQuestionIndex].id]: e.target.value });
     };
 
+    const updateAnswers = () => {
+        const questionId = questions[currentQuestionIndex].id;
+        
+        // Check if the answer for the current question already exists
+        const existingAnswerIndex = answers.findIndex(ans => ans.questionId === questionId);
+    
+        if (existingAnswerIndex >= 0) {
+            // Update the existing answer
+            const updatedAnswers = [...answers];
+            updatedAnswers[existingAnswerIndex] = { questionId, answer: currentAnswer };
+            setAnswers(updatedAnswers);
+        } else {
+            // Add a new answer object
+            setAnswers([...answers, { questionId, answer: currentAnswer }]);
+        }
+    };
+    
+
     const handleNextQuestion = () => {
+        updateAnswers();
         setCurrentQuestionIndex(currentQuestionIndex + 1);
     };
 
     const handlePreviousQuestion = () => {
         if (currentQuestionIndex > 0) {
+            updateAnswers();
             setCurrentQuestionIndex(currentQuestionIndex - 1);
         }
     };
 
-
-
-    const handleSubmitAnswers = () => {
-        console.log('Answers:', answers);
+    const handleSubmitAnswers = async () => {
+        updateAnswers();
+        const id = JSON.parse(localStorage.getItem('user')).id;
+        try {
+            await doApiPost(API_URL + "/responses", {answers:answers, userId:id});
+            navigate("/home")
+        } catch (err) {
+            console.error('Error submitting answers:', err);
+        }
     };
 
     return (

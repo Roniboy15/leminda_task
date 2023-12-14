@@ -16,12 +16,12 @@ const Header = () => {
 
     return (
         <div className="position-fixed top-50 end-0  px-0 py-2" style={{ zIndex: 1050 }}>
-            <div className="d-flex flex-column  bg-primary bg-opacity-50 text-white rounded-start py-4 p-2">
+            <div className="d-flex flex-column  bg-primary bg-opacity-50 text-white rounded-start-4 py-4 ">
                 {loggedIn ? (
                     <>
-                        <a href="/logout" className="btn btn-light mt-2" onClick={() => logOut()}>Logout</a>
-                        <a href="/questions" className="btn btn-light mt-3">Questions</a>
-                        <a href="/home" className="btn btn-light mt-3 mb-2">Home</a>
+                        <a href="/logout" className="btn btn-light rounded-0 rounded-start-4 mt-2 ms-3" onClick={() => logOut()}>Logout</a>
+                        <a href="/questions" className="btn btn-light rounded-0 rounded-start-4 mt-3 ms-3">Questions</a>
+                        <a href="/home" className="btn btn-light rounded-0 rounded-start-4 mt-3 mb-2 ms-3">Home</a>
                     </>
                 ) : (
                     <>
