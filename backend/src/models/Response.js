@@ -34,11 +34,20 @@ class Response {
 
     // Get all responses for a specific question
     static async findByQuestionId(questionId) {
+        const id = Number(questionId);
         const [responses] = await database.query('SELECT * FROM Responses');
-        console.log(responses)
-        return responses
-            .map(res => new Response(res.id, res.userId, res.answers, res.createdAt))
-            .filter(res => res.answers.some(answer => answer.questionId === questionId));
+
+        // Filter and map to extract only relevant answers with their corresponding userId
+        const relevantAnswers = responses.reduce((acc, res) => {
+            const answers = res.answers;
+            answers.filter(answer => answer.questionId === id)
+                   .forEach(matchingAnswer => {
+                       acc.push({ userId: res.userId, answer: matchingAnswer.answer });
+                   });
+            return acc;
+        }, []);
+
+        return relevantAnswers;
     }
 
     // Get average rating for a specific question
