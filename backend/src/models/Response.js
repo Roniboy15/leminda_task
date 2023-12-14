@@ -41,38 +41,39 @@ class Response {
         const relevantAnswers = responses.reduce((acc, res) => {
             const answers = res.answers;
             answers.filter(answer => answer.questionId === id)
-                   .forEach(matchingAnswer => {
-                       acc.push({ userId: res.userId, answer: matchingAnswer.answer });
-                   });
+                .forEach(matchingAnswer => {
+                    acc.push({ userId: res.userId, answer: matchingAnswer.answer });
+                });
             return acc;
         }, []);
 
         return relevantAnswers;
     }
 
-    // Get average rating for a specific question
-    static async getAverageRatingForQuestion(questionId) {
-        const [responses] = await database.query('SELECT * FROM Responses');
-        let totalRating = 0;
-        let count = 0;
+    // // Get average rating for a specific question
+    // static async getAverageRatingForQuestion(questionId) {
+    //     const [responses] = await database.query('SELECT * FROM Responses');
+    //     let totalRating = 0;
+    //     let count = 0;
 
-        responses.forEach(res => {
-            const answers = JSON.parse(res.answers);
-            answers.forEach(answer => {
-                if (answer.questionId === questionId && answer.rating) {
-                    totalRating += answer.rating;
-                    count++;
-                }
-            });
-        });
+    //     responses.forEach(res => {
+    //         const answers = res.answers;
+    //         answers.forEach(answer => {
+    //             if (answer.questionId === questionId && answer.rating) {
+    //                 totalRating += answer.rating;
+    //                 count++;
+    //             }
+    //         });
+    //     });
 
-        return count > 0 ? (totalRating / count) : 0;
-    }
+    //     return count > 0 ? (totalRating / count) : 0;
+    // }
 
     // Get responses within a date range
     static async findByDateRange(startDate, endDate) {
+
         const [responses] = await database.query('SELECT * FROM Responses WHERE createdAt BETWEEN ? AND ?', [startDate, endDate]);
-        return responses.map(res => new Response(res.id, res.userId, JSON.parse(res.answers), res.createdAt));
+        return responses.map(res => new Response(res.id, res.userId, res.answers, res.createdAt));
     }
 
 }

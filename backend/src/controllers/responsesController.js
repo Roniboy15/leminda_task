@@ -72,7 +72,12 @@ const responsesController = {
     // Get responses within a date range
     async getResponsesByDateRange(req, res) {
         try {
-            const { startDate, endDate } = req.query;
+            // const { startDate, endDate } = req.query;
+
+            // Example usage of findByDateRange
+            const startDate = new Date('2023-12-13').toISOString();
+            const endDate = new Date('2023-12-15').toISOString();
+
             const responses = await Response.findByDateRange(startDate, endDate);
             res.json(responses);
         } catch (error) {
