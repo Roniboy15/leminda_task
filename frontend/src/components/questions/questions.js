@@ -28,7 +28,8 @@ const Questions = () => {
 
     useEffect(() => {
         fetchQuestions();
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
 
     useEffect(() => {
         setCurrentAnswer(answers[questions[currentQuestionIndex]?.id] || '');

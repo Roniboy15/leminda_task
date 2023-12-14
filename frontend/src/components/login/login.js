@@ -10,7 +10,7 @@ function Login() {
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
-    const { setLoggedIn, setUserId } = useContext(AuthContext);
+    const { setLoggedIn } = useContext(AuthContext);
 
     const retrieveUser = async (_id) => {
         try {
@@ -30,7 +30,10 @@ function Login() {
             setLoggedIn(true)
             saveToken(response.data.token)
             retrieveUser(response.data.id)
-            navigate('/home')
+            setTimeout(() => {
+                navigate('/home')
+
+            }, 300)
         } catch (error) {
             if (error.response) {
                 setErrorMessage(error.response.data.message);

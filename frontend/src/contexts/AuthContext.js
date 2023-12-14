@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from 'react';
+import React, { createContext, useState } from 'react';
 import { isAuthenticated } from '../utils/auth';
 // import { API_URL, doApiGet } from '../services/apiServices';
 

@@ -1,12 +1,11 @@
-import React, { useContext, useState } from 'react';
+import React, {  useState } from 'react';
 import { Button, Container, Card } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../../contexts/AuthContext';
 
 const Home = () => {
 
     const navigate = useNavigate();
-    const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')))
+    const [user] = useState(JSON.parse(localStorage.getItem('user')))
     const start = () => {
         navigate('/questions')
     }
