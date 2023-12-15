@@ -8,6 +8,7 @@ class Question {
 
     // Retrieve all questions
     static async findAll() {
+        // const [questions] = await database.query('SELECT * FROM Questions LIMIT 10');
         const [questions] = await database.query('SELECT * FROM Questions');
         return questions.map(q => new Question(q.id, q.text));
     }

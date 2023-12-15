@@ -1,0 +1,21 @@
+.card{
+    background-color: rgb(113, 207, 254);
+}
+.card-body p{
+    min-height: 50px;
+}
+
+.timer-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.timer {
+    padding: 10px 20px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 1.1em;
+    color: #333;
+}

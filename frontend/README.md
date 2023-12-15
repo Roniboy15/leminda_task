@@ -7,7 +7,7 @@ The goal of this project is to develop a dynamic survey system where questions a
 ## Technologies Used
 
 - Frontend: React
-- Backend: Flask (Python) / Node.js
+- Backend: Node.js
 - Database: SQL
 
 ## Features
