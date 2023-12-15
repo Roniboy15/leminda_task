@@ -1,20 +1,21 @@
 const database = require('../db/database');
 
 class Response {
-    constructor(id, userId, answers, createdAt) {
+    constructor(id, userId, answers, createdAt, elapsedTime) {
         this.id = id;
         this.userId = userId;
-        this.answers = answers; // This should be an array an 
+        this.answers = answers; // This should be an array
         this.createdAt = createdAt;
+        this.elapsedTime = elapsedTime;
     }
 
     // Save a new response
     async save() {
-        console.log(this.answers, this.userId)
-        const [result] = await database.query('INSERT INTO Responses (userId, answers) VALUES (?, ?)', [this.userId, JSON.stringify(this.answers)]);
+        const [result] = await database.query('INSERT INTO Responses (userId, answers, elapsedTime) VALUES (?, ?, ?)', [this.userId, JSON.stringify(this.answers), this.elapsedTime]);
         this.id = result.insertId;
         return this;
     }
+    
 
     // Delete a response
     static async delete(id) {
@@ -24,13 +25,13 @@ class Response {
     // Get all responses of a specific user
     static async findByUserId(userId) {
         const [responses] = await database.query('SELECT * FROM Responses WHERE userId = ?', [userId]);
-        return responses.map(res => new Response(res.id, res.userId, res.answers, res.createdAt));
+        return responses.map(res => new Response(res.id, res.userId, res.answers, res.createdAt, res.elapsedTime));
     }
 
     // Get all responses (of all users)
     static async findAll() {
         const [responses] = await database.query('SELECT * FROM Responses');
-        return responses.map(res => new Response(res.id, res.userId, res.answers, res.createdAt));
+        return responses.map(res => new Response(res.id, res.userId, res.answers, res.createdAt, res.elapsedTime));
     }
 
     // Get all responses for a specific question
@@ -74,7 +75,7 @@ class Response {
     static async findByDateRange(startDate, endDate) {
 
         const [responses] = await database.query('SELECT * FROM Responses WHERE createdAt BETWEEN ? AND ?', [startDate, endDate]);
-        return responses.map(res => new Response(res.id, res.userId, res.answers, res.createdAt));
+        return responses.map(res => new Response(res.id, res.userId, res.answers, res.createdAt, res.elapsedTime));
     }
 
 }

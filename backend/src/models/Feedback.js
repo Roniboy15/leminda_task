@@ -1,4 +1,4 @@
-import database = require("../db/database");
+const database = require("../db/database");
 
 class Feedback {
     constructor(id, userId, questionId, text, rating) {

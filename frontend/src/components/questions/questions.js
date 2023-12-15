@@ -4,6 +4,7 @@ import { API_URL, doApiGet, doApiPost } from '../../services/apiServices';
 import Feedback from './feedback';
 import './questions.css'
 import LoadingSpinner from '../../hooks/loading/loading';
+import formatTime from '../../utils/timerFormat';
 
 const Questions = () => {
     const [questions, setQuestions] = useState([]);
@@ -11,6 +12,10 @@ const Questions = () => {
     const [answers, setAnswers] = useState([]);
     const [currentAnswer, setCurrentAnswer] = useState('');
     const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+
+    const [startTime, setStartTime] = useState(null);
+    const [elapsedTime, setElapsedTime] = useState(0);
+
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
@@ -31,7 +36,10 @@ const Questions = () => {
 
     useEffect(() => {
         if (questions.length > 0 && questions[currentQuestionIndex]) {
-            setCurrentAnswer(answers[questions[currentQuestionIndex].id] || '');
+            // Find the answer object for the current question
+            const answerObj = answers.find(ans => ans.questionId === questions[currentQuestionIndex].id);
+            // Set the currentAnswer to the answer string if it exists, or to an empty string if not
+            setCurrentAnswer(answerObj ? answerObj.answer : '');
         }
     }, [currentQuestionIndex, questions, answers]);
 
@@ -41,10 +49,10 @@ const Questions = () => {
 
     const updateAnswers = () => {
         const questionId = questions[currentQuestionIndex].id;
-        
+
         // Check if the answer for the current question already exists
         const existingAnswerIndex = answers.findIndex(ans => ans.questionId === questionId);
-    
+
         if (existingAnswerIndex >= 0) {
             // Update the existing answer
             const updatedAnswers = [...answers];
@@ -55,7 +63,7 @@ const Questions = () => {
             setAnswers([...answers, { questionId, answer: currentAnswer }]);
         }
     };
-    
+
 
     const handleNextQuestion = () => {
         updateAnswers();
@@ -69,17 +77,51 @@ const Questions = () => {
         }
     };
 
+    useEffect(() => {
+        // Start the timer when the component mounts
+        const timerStart = Date.now();
+        setStartTime(timerStart);
+
+        // Clear the timer when the component unmounts
+        return () => {
+            setElapsedTime(0);
+        };
+    }, []);
+
+    useEffect(() => {
+        if (startTime) {
+            const interval = setInterval(() => {
+                setElapsedTime(Date.now() - startTime);
+            }, 1000);
+
+            return () => clearInterval(interval);
+        }
+    }, [startTime]);
+
+
+
+    const updateElapsedTime = () => {
+        if (startTime) {
+            const now = Date.now();
+            setElapsedTime(now - startTime);
+        }
+    };
+
+
+
     const handleSubmitAnswers = async () => {
+        updateElapsedTime();
         updateAnswers();
         const id = JSON.parse(localStorage.getItem('user')).id;
+        const time = Math.floor(elapsedTime / 1000);
         try {
-            await doApiPost(API_URL + "/responses", {answers:answers, userId:id});
-            navigate("/home")
+            await doApiPost(API_URL + "/responses", { answers, userId: id, elapsedTime:time });
+            navigate("/home");
+            alert("Thanks for answering our questions!");
         } catch (err) {
             console.error('Error submitting answers:', err);
         }
     };
-
     return (
         <>
             {!loading ?
@@ -115,6 +157,13 @@ const Questions = () => {
                                     <button className="btn btn-secondary mt-3" onClick={() => setShowFeedbackModal(true)}>
                                         Give Feedback
                                     </button>
+
+                                    <div />
+                                </div>
+                            </div>
+                            <div className="timer-container fixed-bottom mb-3">
+                                <div className="timer">
+                                    {formatTime(elapsedTime)}
                                 </div>
                             </div>
                         </div>

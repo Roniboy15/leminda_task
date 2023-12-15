@@ -25,9 +25,9 @@ const Header = () => {
                     </>
                 ) : (
                     <>
-                        <a href="/login" className="btn btn-light mt-2 ">Login</a>
-                        <a href="/signup" className="btn btn-light mt-3 ">Signup</a>
-                        <a href="/home" className="btn btn-light mt-3 mb-2">Home</a>
+                        <a href="/login" className="btn btn-light rounded-0 rounded-start-4 ms-3 mt-3 ">Login</a>
+                        <a href="/signup" className="btn btn-light rounded-0 rounded-start-4 ms-3 mt-3 ">Signup</a>
+                        <a href="/home" className="btn btn-light rounded-0 rounded-start-4 ms-3 mt-3 mb-2">Home</a>
                     </>
                 )}
             </div>

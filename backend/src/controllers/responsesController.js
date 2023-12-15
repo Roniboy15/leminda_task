@@ -5,7 +5,8 @@ const responsesController = {
     // Save a new response
     async saveResponse(req, res) {
         try {
-            const response = new Response(null, req.body.userId, req.body.answers);
+         
+            const response = new Response(null, req.body.userId, req.body.answers, null, req.body.elapsedTime);
             await response.save();
             res.status(201).json(response);
         } catch (error) {
