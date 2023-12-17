@@ -120,7 +120,7 @@ const Questions = () => {
                 const time = Math.floor(elapsedTime / 1000);
                 try {
                     await doApiPost(API_URL + "/responses", { answers, userId: id, elapsedTime: time });
-                    navigate("/home");
+                    navigate("/");
                     alert("Thanks for answering our questions!");
                 } catch (err) {
                     console.error('Error submitting answers:', err);
