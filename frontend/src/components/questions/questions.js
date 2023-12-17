@@ -17,6 +17,8 @@ const Questions = () => {
     const [elapsedTime, setElapsedTime] = useState(0);
 
     const [loading, setLoading] = useState(true);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    
     const navigate = useNavigate();
 
     const fetchQuestions = async () => {
@@ -49,18 +51,14 @@ const Questions = () => {
 
     const updateAnswers = () => {
         const questionId = questions[currentQuestionIndex].id;
-
-        // Check if the answer for the current question already exists
         const existingAnswerIndex = answers.findIndex(ans => ans.questionId === questionId);
 
         if (existingAnswerIndex >= 0) {
-            // Update the existing answer
             const updatedAnswers = [...answers];
             updatedAnswers[existingAnswerIndex] = { questionId, answer: currentAnswer };
             setAnswers(updatedAnswers);
         } else {
-            // Add a new answer object
-            setAnswers([...answers, { questionId, answer: currentAnswer }]);
+            setAnswers(prevAnswers => [...prevAnswers, { questionId, answer: currentAnswer }]);
         }
     };
 
@@ -112,16 +110,28 @@ const Questions = () => {
     const handleSubmitAnswers = async () => {
         updateElapsedTime();
         updateAnswers();
-        const id = JSON.parse(localStorage.getItem('user')).id;
-        const time = Math.floor(elapsedTime / 1000);
-        try {
-            await doApiPost(API_URL + "/responses", { answers, userId: id, elapsedTime:time });
-            navigate("/home");
-            alert("Thanks for answering our questions!");
-        } catch (err) {
-            console.error('Error submitting answers:', err);
-        }
+        setIsSubmitting(true);
     };
+
+    useEffect(() => {
+        if (isSubmitting) {
+            const submitAnswers = async () => {
+                const id = JSON.parse(localStorage.getItem('user')).id;
+                const time = Math.floor(elapsedTime / 1000);
+                try {
+                    await doApiPost(API_URL + "/responses", { answers, userId: id, elapsedTime: time });
+                    navigate("/home");
+                    alert("Thanks for answering our questions!");
+                } catch (err) {
+                    console.error('Error submitting answers:', err);
+                }
+            };
+
+            submitAnswers();
+            setIsSubmitting(false);
+        }
+    }, [isSubmitting, answers, elapsedTime, navigate]);
+
     return (
         <>
             {!loading ?
