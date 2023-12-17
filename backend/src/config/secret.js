@@ -6,6 +6,7 @@ exports.config = {
     mysql_user: process.env.MYSQL_USER,
     mysql_password: process.env.MYSQL_PASSWORD,
     mysql_database: process.env.MYSQL_DATABASE,
+    mysql_host: process.env.MYSQL_HOST,
     jwt_secret_key: process.env.JWT_SECRET_KEY,
     jwt_login_duration: process.env.JWT_LOGIN_DURATION
 
