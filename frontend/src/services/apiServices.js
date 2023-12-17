@@ -1,6 +1,6 @@
 import axios from "axios"
 
-export const API_URL = "http://localhost:3001";
+export const API_URL = "https://sample-questionnaire-server.onrender.com";
 export const TOKEN_KEY = "auth_token";
 
 // for Get only
