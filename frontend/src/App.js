@@ -1,10 +1,9 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ProtectedRoute from './routes/protectedRoutes';
 import Header from './components/header/header';
-import Footer from './components/footer/footer';
 import Login from './components/login/login';
-import { isAuthenticated } from './utils/auth';
+// import { isAuthenticated } from './utils/auth';
 import Signup from './components/signup/signup';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -16,7 +15,7 @@ import Home from './components/home/Home';
 
 function App() {
   
-  const userLoggedIn = isAuthenticated();
+  // const userLoggedIn = isAuthenticated();
 
   return (
     <AuthProvider>
@@ -33,11 +32,7 @@ function App() {
               <Questions />
             </ProtectedRoute>}
           />
-          <Route path="/feedback" element={
-            <ProtectedRoute>
-              <Footer />
-            </ProtectedRoute>}
-          />
+         
           {/* <Route path="*" element={<Navigate to={userLoggedIn ? "/home" : "/login"} replace />} /> */}
 
         </Routes>

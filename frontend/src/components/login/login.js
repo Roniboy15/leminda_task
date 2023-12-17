@@ -31,7 +31,7 @@ function Login() {
             saveToken(response.data.token)
             retrieveUser(response.data.id)
             setTimeout(() => {
-                navigate('/home')
+                navigate('/')
 
             }, 300)
         } catch (error) {
