@@ -1,0 +1,37 @@
+.home-container {
+    height: 100vh; /* Full height */
+    padding-top: 50px; /* Add some space at the top for larger screens */
+    display: flex;
+}
+
+/* Adjust the top padding for smaller screens */
+@media (max-width: 768px) {
+    .home-container {
+        padding-top: 40px; /* Less space at the top for smaller screens */
+        display: block;
+    }
+}
+
+.home-card {
+    max-width: 600px; /* Set a max width for larger screens */
+    width: 100%; /* Full width on smaller screens */
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* Add some shadow for depth */
+    border: none; /* Remove border */
+    border-radius: 15px; /* Rounded corners */
+    background-color: #f0f8ff; /* A light bluish background */
+}
+
+.home-card .btn-primary {
+    background-color: #007bff; /* A nice shade of blue */
+    border-color: #007bff;
+}
+
+.home-card .card-title {
+    color: #0056b3; /* A deeper blue for the title */
+    margin-bottom: 15px; /* Space below the title */
+}
+
+.home-card .card-text {
+    color: #333; /* Darker text for readability */
+    margin-bottom: 20px; /* Space above the button */
+}
