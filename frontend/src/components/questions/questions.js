@@ -9,166 +9,90 @@ import formatTime from '../../utils/timerFormat';
 const Questions = () => {
     const [questions, setQuestions] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [answers, setAnswers] = useState([]);
-    const [currentAnswer, setCurrentAnswer] = useState('');
-    const [showFeedbackModal, setShowFeedbackModal] = useState(false);
-
-    const [startTime, setStartTime] = useState(null);
-    const [elapsedTime, setElapsedTime] = useState(0);
-
+    const [answers, setAnswers] = useState({});
     const [loading, setLoading] = useState(true);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    
+    const [startTime] = useState(Date.now());
+    const [elapsedTime, setElapsedTime] = useState(0);
+    const [showFeedbackModal, setShowFeedbackModal] = useState(false);
     const navigate = useNavigate();
 
-    const fetchQuestions = async () => {
-        try {
-            const questionsFetched = await doApiGet(API_URL + '/questions/all');
-            setQuestions(questionsFetched);
-            setLoading(false);
-        } catch (err) {
-            navigate("/");
-            console.error('Error fetching questions:', err);
-        }
-    };
-
     useEffect(() => {
-        fetchQuestions();
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-    useEffect(() => {
-        if (questions.length > 0 && questions[currentQuestionIndex]) {
-            // Find the answer object for the current question
-            const answerObj = answers.find(ans => ans.questionId === questions[currentQuestionIndex].id);
-            // Set the currentAnswer to the answer string if it exists, or to an empty string if not
-            setCurrentAnswer(answerObj ? answerObj.answer : '');
-        }
-    }, [currentQuestionIndex, questions, answers]);
-
-    const handleAnswerChange = (e) => {
-        setCurrentAnswer(e.target.value);
-    };
-
-    const updateAnswers = () => {
-        const questionId = questions[currentQuestionIndex].id;
-        const existingAnswerIndex = answers.findIndex(ans => ans.questionId === questionId);
-
-        if (existingAnswerIndex >= 0) {
-            const updatedAnswers = [...answers];
-            updatedAnswers[existingAnswerIndex] = { questionId, answer: currentAnswer };
-            setAnswers(updatedAnswers);
-        } else {
-            setAnswers(prevAnswers => [...prevAnswers, { questionId, answer: currentAnswer }]);
-        }
-    };
-
-
-    const handleNextQuestion = () => {
-        updateAnswers();
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
-    };
-
-    const handlePreviousQuestion = () => {
-        if (currentQuestionIndex > 0) {
-            updateAnswers();
-            setCurrentQuestionIndex(currentQuestionIndex - 1);
-        }
-    };
-
-    useEffect(() => {
-        // Start the timer when the component mounts
-        const timerStart = Date.now();
-        setStartTime(timerStart);
-
-        // Clear the timer when the component unmounts
-        return () => {
-            setElapsedTime(0);
+        const fetchQuestions = async () => {
+            try {
+                const questionsFetched = await doApiGet(API_URL + '/questions/all');
+                setQuestions(questionsFetched);
+                setLoading(false);
+            } catch (err) {
+                console.error('Error fetching questions:', err);
+                navigate("/");
+            }
         };
-    }, []);
+        fetchQuestions();
+    }, [navigate]);
 
     useEffect(() => {
-        if (startTime) {
-            const interval = setInterval(() => {
-                setElapsedTime(Date.now() - startTime);
-            }, 1000);
-
-            return () => clearInterval(interval);
-        }
+        const interval = setInterval(() => {
+            setElapsedTime(Date.now() - startTime);
+        }, 1000);
+        return () => clearInterval(interval);
     }, [startTime]);
 
-
-
-    const updateElapsedTime = () => {
-        if (startTime) {
-            const now = Date.now();
-            setElapsedTime(now - startTime);
-        }
+    const handleAnswerChange = (e) => {
+        setAnswers({ ...answers, [questions[currentQuestionIndex].id]: e.target.value });
     };
 
-
+    const navigateQuestions = (direction) => {
+        const newIndex = currentQuestionIndex + direction;
+        if (newIndex >= 0 && newIndex < questions.length) {
+            setCurrentQuestionIndex(newIndex);
+        }
+    };
 
     const handleSubmitAnswers = async () => {
-        updateElapsedTime();
-        updateAnswers();
-        setIsSubmitting(true);
+        try {
+            const timeElapsed = Math.floor((Date.now() - startTime) / 1000);
+            await doApiPost(API_URL + "/responses", { answers, userId: JSON.parse(localStorage.getItem('user')).id, elapsedTime: timeElapsed });
+            navigate("/");
+            alert("Thanks for answering our questions!");
+        } catch (err) {
+            console.error('Error submitting answers:', err);
+        }
     };
 
-    useEffect(() => {
-        if (isSubmitting) {
-            const submitAnswers = async () => {
-                const id = JSON.parse(localStorage.getItem('user')).id;
-                const time = Math.floor(elapsedTime / 1000);
-                try {
-                    await doApiPost(API_URL + "/responses", { answers, userId: id, elapsedTime: time });
-                    navigate("/");
-                    alert("Thanks for answering our questions!");
-                } catch (err) {
-                    console.error('Error submitting answers:', err);
-                }
-            };
-
-            submitAnswers();
-            setIsSubmitting(false);
-        }
-    }, [isSubmitting, answers, elapsedTime, navigate]);
+    const currentQuestion = questions[currentQuestionIndex];
 
     return (
         <>
-            {!loading ?
+            {loading ? <LoadingSpinner /> :
                 <div className="container mt-4">
                     {questions.length > 0 && (
                         <div className='row justify-content-center'>
                             <div className="card mb-3 col-11 col-md-8">
                                 <div className="card-body">
                                     <h5 className="card-title">Question {currentQuestionIndex + 1}</h5>
-                                    <p className="card-text mt-3">{questions[currentQuestionIndex].text}</p>
+                                    <p className="card-text mt-3">{currentQuestion.text}</p>
                                     <input
                                         type="text"
                                         className="form-control"
                                         placeholder="Your answer"
-                                        value={currentAnswer}
+                                        value={answers[currentQuestion.id] || ''}
                                         onChange={handleAnswerChange}
                                     />
-                                    {currentQuestionIndex > 0 && (
-                                        <button className="btn btn-primary mt-3" onClick={handlePreviousQuestion}>
-                                            Previous Question
-                                        </button>
-                                    )}
+                                    <button className="btn btn-primary mt-3" onClick={() => navigateQuestions(-1)} disabled={currentQuestionIndex === 0}>
+                                        Previous Question
+                                    </button>
                                     {currentQuestionIndex === questions.length - 1 ? (
                                         <button className="btn btn-success mt-3 ms-2" onClick={handleSubmitAnswers}>
                                             Send Answers
                                         </button>
-                                    ) :
-                                        <button className="btn btn-primary mt-3 ms-2 me-2" onClick={handleNextQuestion}>
+                                    ) : (
+                                        <button className="btn btn-primary mt-3 ms-2 me-2" onClick={() => navigateQuestions(1)}>
                                             Next Question
                                         </button>
-                                    }
-
+                                    )}
                                     <button className="btn btn-secondary mt-3" onClick={() => setShowFeedbackModal(true)}>
                                         Give Feedback
                                     </button>
-
-                                    <div />
                                 </div>
                             </div>
                             <div className="timer-container fixed-bottom mb-3">
@@ -178,12 +102,9 @@ const Questions = () => {
                             </div>
                         </div>
                     )}
-
-                    {showFeedbackModal ?
-                        <Feedback setShowFeedbackModal={setShowFeedbackModal} questions={questions} currentQuestionIndex={currentQuestionIndex} />
-                        : ''}
+                    {showFeedbackModal && <Feedback setShowFeedbackModal={setShowFeedbackModal} questions={questions} currentQuestionIndex={currentQuestionIndex} />}
                 </div>
-                : <LoadingSpinner />}
+            }
         </>
     );
 };
