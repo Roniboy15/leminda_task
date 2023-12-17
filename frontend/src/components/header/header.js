@@ -19,7 +19,7 @@ const Header = () => {
             <div className="d-flex flex-column  bg-primary bg-opacity-50 text-white rounded-start-4 py-4 ">
                 {loggedIn ? (
                     <>
-                        <a href="/logout" className="btn btn-light rounded-0 rounded-start-4 mt-2 ms-3" onClick={() => logOut()}>Logout</a>
+                        <a href="/login" className="btn btn-light rounded-0 rounded-start-4 mt-2 ms-3" onClick={() => logOut()}>Logout</a>
                         <a href="/questions" className="btn btn-light rounded-0 rounded-start-4 mt-3 ms-3">Questions</a>
                         <a href="/home" className="btn btn-light rounded-0 rounded-start-4 mt-3 mb-2 ms-3">Home</a>
                     </>
@@ -27,7 +27,7 @@ const Header = () => {
                     <>
                         <a href="/login" className="btn btn-light rounded-0 rounded-start-4 ms-3 mt-3 ">Login</a>
                         <a href="/signup" className="btn btn-light rounded-0 rounded-start-4 ms-3 mt-3 ">Signup</a>
-                        <a href="/home" className="btn btn-light rounded-0 rounded-start-4 ms-3 mt-3 mb-2">Home</a>
+                        <a href="/" className="btn btn-light rounded-0 rounded-start-4 ms-3 mt-3 mb-2">Home</a>
                     </>
                 )}
             </div>
