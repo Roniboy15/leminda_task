@@ -2,7 +2,7 @@
 
 ## Objective
 
-The goal of this project is to develop a dynamic survey system where questions are tailored to users and stored in an SQL database.
+A dynamic questionnaire response system with a feedback option stored in an SQL database.
 
 ## Technologies Used
 
