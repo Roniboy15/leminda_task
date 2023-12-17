@@ -33,3 +33,6 @@ ehthumbs.db
 # Verzeichnisse, die für den Bau der Anwendung erstellt werden
 build/
 dist/
+
+
+leminda.sql
