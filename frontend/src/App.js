@@ -38,7 +38,7 @@ function App() {
               <Footer />
             </ProtectedRoute>}
           />
-          <Route path="*" element={<Navigate to={userLoggedIn ? "/home" : "/login"} replace />} />
+          {/* <Route path="*" element={<Navigate to={userLoggedIn ? "/home" : "/login"} replace />} /> */}
 
         </Routes>
       </Router>
