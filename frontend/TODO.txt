@@ -6,8 +6,7 @@ Localstorage
 -remove the user in localstorage after one hour (or how  long the token is active)
 
 Components
--Add Timer
-
+-check rating options (not higher than 5 etc)
 
 README
 -update folder name etc

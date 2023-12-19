@@ -101,6 +101,17 @@ const feedbackController = {
             console.error(error);
             res.status(500).json({ message: 'Error fetching feedbacks for question' });
         }
+    },
+
+    // Get general feedbacks
+    async getFeedbackWithNoRatingOrQuestionId(req, res) {
+        try {
+            const feedbacks = await Feedback.findWithNoRatingOrQuestionId();
+            res.json(feedbacks);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Error fetching feedbacks for question' });
+        }
     }
 
 };
