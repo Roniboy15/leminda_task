@@ -2,9 +2,6 @@
 Context
 -fix  bug that prevents the userId state from changing (it changes to undefined when changing routes)
 
-Localstorage
--remove the user in localstorage after one hour (or how  long the token is active)
-
 Components
 -check rating options (not higher than 5 etc)
 
