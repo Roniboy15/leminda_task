@@ -9,6 +9,9 @@ router.post('/', auth, feedbackController.createFeedback);
 // Get all feedbacks
 router.get('/', authAdmin, feedbackController.getAllFeedbacks);
 
+// Get general feedback
+router.get('/general', authAdmin, feedbackController.getFeedbackWithNoRatingOrQuestionId);
+
 // Get feedback by ID
 router.get('/:id', auth, feedbackController.getFeedbackById);
 

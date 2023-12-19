@@ -43,7 +43,15 @@ class Feedback {
         return feedbacks.map(fb => new Feedback(fb.id, fb.userId, fb.questionId, fb.text, fb.rating));
     }
 
+    static async findWithNoRatingOrQuestionId() {
+
+        const [feedbacks] = await database.query(
+            'SELECT * FROM Feedbacks WHERE (rating IS NULL OR rating = "") AND (questionId IS NULL OR questionId = "")'
+        );
+        return feedbacks.map(fb => new Feedback(fb.id, fb.userId, fb.questionId, fb.text, fb.rating));
+    }
+
 
 }
 
-module.exports =  Feedback;
+module.exports = Feedback;

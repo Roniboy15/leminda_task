@@ -33,7 +33,7 @@ function Login() {
             setTimeout(() => {
                 navigate('/')
 
-            }, 300)
+            }, 600)
         } catch (error) {
             if (error.response) {
                 setErrorMessage(error.response.data.message);
